@@ -1,11 +1,11 @@
 package org.ygame;
 
-import org.ygame.client.shared.GameApi.Operation;
-import org.ygame.client.shared.GameApi.VerifyMove;
-import org.ygame.client.shared.GameApi.VerifyMoveDone;
+import org.game_api.GameApi.Operation;
+import org.game_api.GameApi.VerifyMove;
+import org.game_api.GameApi.VerifyMoveDone;
 import org.ygame.client.shared.YGameLogic;
 import org.ygame.client.shared.YState;
-import org.ygame.client.shared.GameApi.*;
+import org.game_api.GameApi.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -65,7 +65,7 @@ public class LogicTest {
 				verifyDone.getHackerPlayerId());
 	}
 
-	private ImmutableList<Integer> playerIds = ImmutableList.of(42, 43);
+	private ImmutableList<String> playerIds = ImmutableList.of("42", "43");
 
 	@Test
 	public void testBlackWin() {
@@ -145,7 +145,7 @@ public class LogicTest {
 		List<Map<String, Object>> playersInfo = new ArrayList<Map<String, Object>>();
 		HashMap<String, Object> playerWhiteInfo = new HashMap<String, Object>();
 		HashMap<String, Object> playerBlackInfo = new HashMap<String, Object>();
-		int playerWhiteId = 1, playerBlackId = 2;
+		String playerWhiteId = "1", playerBlackId = "2";
 		playerWhiteInfo.put(PLAYERID, playerWhiteId);
 		playerBlackInfo.put(PLAYERID, playerBlackId);
 		playersInfo.add(playerWhiteInfo);
@@ -167,7 +167,7 @@ public class LogicTest {
 		lastMove.add(new Set(SETTURN, playerWhiteId));
 		lastMove.add(new Set(SETROW, 3));
 		lastMove.add(new Set(SETCOL, 1));
-		int lastMovePlayerId = playerWhiteId;
+		String lastMovePlayerId = playerWhiteId;
 		VerifyMove verifyMove = new VerifyMove(playersInfo, state, lastState,
 				lastMove, lastMovePlayerId, null);
 		VerifyMoveDone verifyDone = yGameLogic.verify(verifyMove);
@@ -179,7 +179,7 @@ public class LogicTest {
 		List<Map<String, Object>> playersInfo = new ArrayList<Map<String, Object>>();
 		HashMap<String, Object> playerWhiteInfo = new HashMap<String, Object>();
 		HashMap<String, Object> playerBlackInfo = new HashMap<String, Object>();
-		int playerWhiteId = 1, playerBlackId = 2;
+		String playerWhiteId = "1", playerBlackId = "2";
 		playerWhiteInfo.put(PLAYERID, playerWhiteId);
 		playerBlackInfo.put(PLAYERID, playerBlackId);
 		playersInfo.add(playerWhiteInfo);
@@ -201,7 +201,7 @@ public class LogicTest {
 		lastMove.add(new Set(SETTURN, playerBlackId));
 		lastMove.add(new Set(SETROW, 0));
 		lastMove.add(new Set(SETCOL, 0));
-		int lastMovePlayerId = playerBlackId;
+		String lastMovePlayerId = playerBlackId;
 		VerifyMove verifyMove = new VerifyMove(playersInfo, state, lastState,
 				lastMove, lastMovePlayerId, null);
 		VerifyMoveDone verifyDone = yGameLogic.verify(verifyMove);
@@ -213,7 +213,7 @@ public class LogicTest {
 		List<Map<String, Object>> playersInfo = new ArrayList<Map<String, Object>>();
 		HashMap<String, Object> playerWhiteInfo = new HashMap<String, Object>();
 		HashMap<String, Object> playerBlackInfo = new HashMap<String, Object>();
-		int playerWhiteId = 1, playerBlackId = 2;
+		String playerWhiteId = "1", playerBlackId = "2";
 		playerWhiteInfo.put(PLAYERID, playerWhiteId);
 		playerBlackInfo.put(PLAYERID, playerBlackId);
 		playersInfo.add(playerWhiteInfo);
@@ -235,7 +235,7 @@ public class LogicTest {
 		lastMove.add(new Set(SETTURN, playerBlackId));
 		lastMove.add(new Set(SETROW, 0));
 		lastMove.add(new Set(SETCOL, 0));
-		int lastMovePlayerId = playerBlackId;
+		String lastMovePlayerId = playerBlackId;
 		VerifyMove verifyMove = new VerifyMove(playersInfo, state, lastState,
 				lastMove, lastMovePlayerId, null);
 		VerifyMoveDone verifyDone = yGameLogic.verify(verifyMove);
@@ -247,7 +247,7 @@ public class LogicTest {
 		List<Map<String, Object>> playersInfo = new ArrayList<Map<String, Object>>();
 		HashMap<String, Object> playerWhiteInfo = new HashMap<String, Object>();
 		HashMap<String, Object> playerBlackInfo = new HashMap<String, Object>();
-		int playerWhiteId = 1, playerBlackId = 2;
+		String playerWhiteId = "1", playerBlackId = "2";
 		playerWhiteInfo.put(PLAYERID, playerWhiteId);
 		playerBlackInfo.put(PLAYERID, playerBlackId);
 		playersInfo.add(playerWhiteInfo);
@@ -269,7 +269,7 @@ public class LogicTest {
 		lastMove.add(new Set(SETTURN, playerBlackId));
 		lastMove.add(new Set(SETROW, 0));
 		lastMove.add(new Set(SETCOL, 0));
-		int lastMovePlayerId = playerBlackId;
+		String lastMovePlayerId = playerBlackId;
 		VerifyMove verifyMove = new VerifyMove(playersInfo, state, lastState,
 				lastMove, lastMovePlayerId, null);
 		VerifyMoveDone verifyDone = yGameLogic.verify(verifyMove);
@@ -281,7 +281,7 @@ public class LogicTest {
 		List<Map<String, Object>> playersInfo = new ArrayList<Map<String, Object>>();
 		HashMap<String, Object> playerWhiteInfo = new HashMap<String, Object>();
 		HashMap<String, Object> playerBlackInfo = new HashMap<String, Object>();
-		int playerWhiteId = 1, playerBlackId = 2;
+		String playerWhiteId = "1", playerBlackId = "2";
 		playerWhiteInfo.put(PLAYERID, playerWhiteId);
 		playerBlackInfo.put(PLAYERID, playerBlackId);
 		playersInfo.add(playerWhiteInfo);
@@ -303,7 +303,7 @@ public class LogicTest {
 		lastMove.add(new Set(SETTURN, playerBlackId));
 		lastMove.add(new Set(SETROW, 0));
 		lastMove.add(new Set(SETCOL, 0));
-		int lastMovePlayerId = playerBlackId;
+		String lastMovePlayerId = playerBlackId;
 		VerifyMove verifyMove = new VerifyMove(playersInfo, state, lastState,
 				lastMove, lastMovePlayerId, null);
 		VerifyMoveDone verifyDone = yGameLogic.verify(verifyMove);
@@ -315,7 +315,7 @@ public class LogicTest {
 		List<Map<String, Object>> playersInfo = new ArrayList<Map<String, Object>>();
 		HashMap<String, Object> playerWhiteInfo = new HashMap<String, Object>();
 		HashMap<String, Object> playerBlackInfo = new HashMap<String, Object>();
-		int playerWhiteId = 1, playerBlackId = 2;
+		String playerWhiteId = "1", playerBlackId = "2";
 		playerWhiteInfo.put(PLAYERID, playerWhiteId);
 		playerBlackInfo.put(PLAYERID, playerBlackId);
 		playersInfo.add(playerWhiteInfo);
@@ -337,7 +337,7 @@ public class LogicTest {
 		lastMove.add(new Set(SETTURN, playerWhiteId));
 		lastMove.add(new Set(SETROW, 0));
 		lastMove.add(new Set(SETCOL, 0));
-		int lastMovePlayerId = playerWhiteId;
+		String lastMovePlayerId = playerWhiteId;
 		VerifyMove verifyMove = new VerifyMove(playersInfo, state, lastState,
 				lastMove, lastMovePlayerId, null);
 		VerifyMoveDone verifyDone = yGameLogic.verify(verifyMove);
@@ -349,7 +349,7 @@ public class LogicTest {
 		List<Map<String, Object>> playersInfo = new ArrayList<Map<String, Object>>();
 		HashMap<String, Object> playerWhiteInfo = new HashMap<String, Object>();
 		HashMap<String, Object> playerBlackInfo = new HashMap<String, Object>();
-		int playerWhiteId = 1, playerBlackId = 2;
+		String playerWhiteId = "1", playerBlackId = "2";
 		playerWhiteInfo.put(PLAYERID, playerWhiteId);
 		playerBlackInfo.put(PLAYERID, playerBlackId);
 		playersInfo.add(playerWhiteInfo);
@@ -371,7 +371,7 @@ public class LogicTest {
 		lastMove.add(new Set(SETTURN, playerBlackId));
 		lastMove.add(new Set(SETROW, 0));
 		lastMove.add(new Set(SETCOL, 0));
-		int lastMovePlayerId = playerBlackId;
+		String lastMovePlayerId = playerBlackId;
 		VerifyMove verifyMove = new VerifyMove(playersInfo, state, lastState,
 				lastMove, lastMovePlayerId, null);
 		VerifyMoveDone verifyDone = yGameLogic.verify(verifyMove);

@@ -7,21 +7,21 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 
 public class YState {
-	private final int playerId;
-	private final ImmutableList<Integer> playerIds;
+	private final String playerId;
+	private final ImmutableList<String> playerIds;
 	private String pieces;
 
-	public YState(int playerId, ImmutableList<Integer> playerIds, String pieces) {
+	public YState(String playerId, ImmutableList<String> playerIds, String pieces) {
 		this.playerId = playerId;
 		this.playerIds = playerIds;
 		this.pieces = pieces;
 	}
 
-	public int getCurrentPlayer() {
+	public String getCurrentPlayer() {
 		return playerId;
 	}
 
-	public ImmutableList<Integer> getPlayerIds() {
+	public ImmutableList<String> getPlayerIds() {
 		return playerIds;
 	}
 
@@ -46,6 +46,11 @@ public class YState {
 				checkWhiteHelper(i);
 			if (found)
 				return true;
+			else {
+				leftConnected = false;
+				rightConnected = false;
+				downConnected = false;
+			}
 		}
 		return false;
 	}
@@ -57,6 +62,11 @@ public class YState {
 				checkBlackHelper(i);
 			if (found)
 				return true;
+			else {
+				rightConnected = false;
+				leftConnected = false;
+				downConnected = false;
+			}
 		}
 		return false;
 	}

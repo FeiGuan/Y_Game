@@ -3,11 +3,11 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="tests"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="lib" path="/home/fei/Documents/eclipse/Lib/guava-16.0.1.jar"/>
-	<classpathentry kind="lib" path="/home/fei/Documents/eclipse/Lib/guava-gwt-16.0.1.jar"/>
-	<classpathentry kind="lib" path="/home/fei/Documents/eclipse/Lib/mockito-all-1.9.5.jar"/>
 	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="war/lib/guava-16.0.1.jar"/>
+	<classpathentry kind="lib" path="war/lib/guava-gwt-16.0.1.jar"/>
+	<classpathentry kind="lib" path="war/lib/mockito-all-1.9.5.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

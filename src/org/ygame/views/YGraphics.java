@@ -187,7 +187,7 @@ public class YGraphics extends Composite implements YPresenter.View {
 	}
 
 	@Override
-	public void setGameBoard(int yourPlayerId, List<Integer> playerList,
+	public void setGameBoard(String yourPlayerId, List<String> playerList,
 			String pieces) {
 		for (int i = 0; i < 10; i++)
 			for (int j = 0; j <= i; j++) {

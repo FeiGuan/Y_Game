@@ -1,10 +1,11 @@
 package org.ygame;
 
-import org.ygame.client.shared.GameApi.Game;
-import org.ygame.client.shared.GameApi.IteratingPlayerContainer;
-import org.ygame.client.shared.GameApi.UpdateUI;
-import org.ygame.client.shared.GameApi.VerifyMove;
-import org.ygame.client.shared.GameApi;
+import org.game_api.GameApi.ContainerConnector;
+import org.game_api.GameApi.Game;
+import org.game_api.GameApi.IteratingPlayerContainer;
+import org.game_api.GameApi.UpdateUI;
+import org.game_api.GameApi.VerifyMove;
+import org.game_api.GameApi;
 import org.ygame.client.shared.YGameLogic;
 import org.ygame.presenters.YPresenter;
 import org.ygame.views.YGraphics;
@@ -33,52 +34,31 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class Y_Game implements EntryPoint {
-	IteratingPlayerContainer container;
+	ContainerConnector container;
 	YPresenter yPresenter;
-	
+
 	@Override
 	public void onModuleLoad() {
-		Game game = new Game(){
+		Game game = new Game() {
 
 			@Override
 			public void sendVerifyMove(VerifyMove verifyMove) {
-				container.sendVerifyMoveDone(new YGameLogic().verify(verifyMove));
+				container.sendVerifyMoveDone(new YGameLogic()
+						.verify(verifyMove));
 			}
 
 			@Override
 			public void sendUpdateUI(UpdateUI updateUI) {
 				yPresenter.updateUI(updateUI);
 			}
-			
-		};
-		YGraphics yGraphics = null;
-		try{
-		container = new IteratingPlayerContainer(game, 2);
-		yGraphics = new YGraphics();
-		yPresenter = new YPresenter(yGraphics, container);
-		}
-		catch(Exception e){
-			System.out.println(e);
-		}
-		final ListBox playerSelect = new ListBox();
-		playerSelect.addItem("WhitePlayer");
-		playerSelect.addItem("BlackPlayer");
-		playerSelect.addItem("Viewer");
-		playerSelect.addChangeHandler(new ChangeHandler(){
 
-			@Override
-			public void onChange(ChangeEvent event) {
-				int selectedIndex = playerSelect.getSelectedIndex();
-				int playerId = selectedIndex == 2 ? GameApi.VIEWER_ID : 
-					container.getPlayerIds().get(selectedIndex);
-				container.updateUi(playerId);
-			}
-		});
-		FlowPanel flowPanel = new FlowPanel();
-		flowPanel.add(yGraphics);
-		flowPanel.add(playerSelect);
-		RootPanel.get("mainDiv").add(flowPanel);
+		};
+		container = new ContainerConnector(game);
+		YGraphics yGraphics = new YGraphics();
+		yPresenter = new YPresenter(yGraphics, container);
+
+		RootPanel.get("mainDiv").add(yGraphics);
+		
 		container.sendGameReady();
-		container.updateUi(container.getPlayerIds().get(0));
 	}
 }

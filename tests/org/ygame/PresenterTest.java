@@ -12,13 +12,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
-import org.ygame.client.shared.GameApi.Container;
-import org.ygame.client.shared.GameApi.Operation;
-import org.ygame.client.shared.GameApi.UpdateUI;
+import org.game_api.GameApi.Container;
+import org.game_api.GameApi.Operation;
+import org.game_api.GameApi.UpdateUI;
 import org.ygame.client.shared.YGameLogic;
 import org.ygame.presenters.YPresenter;
 import org.ygame.presenters.YPresenter.View;
-import org.ygame.client.shared.GameApi.*;
+import org.game_api.GameApi.*;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -56,22 +56,22 @@ public class PresenterTest {
 
 	@Test
 	public void testEmptyStateForA() {
-		presenter.updateUI(createUpdateUI(1, 0, emptyState));
+		presenter.updateUI(createUpdateUI("1", "0", emptyState));
 		verify(mockContainer).sendMakeMove(
-				logic.getInitialOperations(ImmutableList.<Integer> of(1, 2)));
+				logic.getInitialOperations(ImmutableList.<String> of("1", "2")));
 	}
 
 	@Test
 	public void testEmptyStateForB() {
-		presenter.updateUI(createUpdateUI(2, 0, emptyState));
+		presenter.updateUI(createUpdateUI("2", "0", emptyState));
 		verify(mockContainer).sendMakeMove(
-				logic.getInitialOperations(ImmutableList.<Integer> of(1, 2)));
+				logic.getInitialOperations(ImmutableList.<String> of("1", "2")));
 	}
 
-	private UpdateUI createUpdateUI(int yourPlayerId, int turnOfPlayerId,
+	private UpdateUI createUpdateUI(String yourPlayerId, String turnOfPlayerId,
 			Map<String, Object> state) {
 		return new UpdateUI(yourPlayerId, playersInfo, state, emptyState,
-				ImmutableList.<Operation> of(new SetTurn(turnOfPlayerId)), 0,
-				ImmutableMap.<Integer, Integer> of());
+				ImmutableList.<Operation> of(new SetTurn(turnOfPlayerId)), "0",
+				ImmutableMap.<String, Integer> of());
 	}
 }

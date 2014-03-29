@@ -6,7 +6,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.ygame.client.shared.GameApi.*;
+import org.game_api.GameApi.EndGame;
+import org.game_api.GameApi.Operation;
+import org.game_api.GameApi.Set;
+import org.game_api.GameApi.SetTurn;
+import org.game_api.GameApi.VerifyMove;
+import org.game_api.GameApi.VerifyMoveDone;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -31,8 +36,8 @@ public class YGameLogic {
 		Map<String, Object> currentStateMap = verifyMove.getState();
 		Map<String, Object> lastStateMap = verifyMove.getLastState();
 		List<Operation> lastMove = verifyMove.getLastMove();
-		List<Integer> playerIds = verifyMove.getPlayerIds();
-		int lastPlayerId = verifyMove.getLastMovePlayerId();
+		List<String> playerIds = verifyMove.getPlayerIds();
+		String lastPlayerId = verifyMove.getLastMovePlayerId();
 
 		// if last state is empty, no need to check
 		if (lastStateMap.isEmpty() && currentStateMap.isEmpty()) {
@@ -40,7 +45,7 @@ public class YGameLogic {
 		}
 
 		String lastPieces = (String) lastStateMap.get(KEYPIECES);
-		int currentPlayerId = (Integer) currentStateMap.get(KEYPLAYERID);
+		String currentPlayerId = (String) currentStateMap.get(KEYPLAYERID);
 		String currentPieces = (String) currentStateMap.get(KEYPIECES);
 
 		if (lastStateMap.isEmpty() && !currentStateMap.isEmpty())
@@ -70,21 +75,20 @@ public class YGameLogic {
 		for (Operation op : lastMove) {
 			if (op instanceof SetTurn) {
 				// Set player Id
-				check(currentPlayerId == ((SetTurn) op).getPlayerId());
+				check(currentPlayerId.equals(((SetTurn) op).getPlayerId()));
 			} else if (op instanceof Set) {
 				// Set the board pieces
 				if (((Set) op).getKey().equals(KEYPIECES))
 					check(currentPieces.equals(((Set) op).getValue()));
-				else if (((Set) op).getKey().equals(KEYPLAYERID)){
-					int setValue = (Integer)((Set) op).getValue();
-					check(currentPlayerId == setValue);
-				}
-				else if (((Set) op).getKey().equals(KEYPLAYERS)){
-					List<Integer> setValue = (List<Integer>) ((Set) op).getValue();
-					check(setValue.get(0) == playerIds.get(0));
-					check(setValue.get(1) == playerIds.get(1));
-				}
-				else
+				else if (((Set) op).getKey().equals(KEYPLAYERID)) {
+					String setValue = (String) ((Set) op).getValue();
+					check(currentPlayerId.equals(setValue));
+				} else if (((Set) op).getKey().equals(KEYPLAYERS)) {
+					List<String> setValue = (List<String>) ((Set) op)
+							.getValue();
+					check(setValue.get(0).equals(playerIds.get(0)));
+					check(setValue.get(1).equals(playerIds.get(1)));
+				} else
 					throw new Exception("Hacker!");
 			} else if (op instanceof EndGame) {
 				// game end
@@ -210,7 +214,7 @@ public class YGameLogic {
 		}
 	}
 
-	public List<Operation> getInitialOperations(List<Integer> playerIds) {
+	public List<Operation> getInitialOperations(List<String> playerIds) {
 		List<Operation> operations = Lists.newArrayList();
 		operations.add(new SetTurn(playerIds.get(0)));
 		String initialPieces = "";
@@ -226,7 +230,7 @@ public class YGameLogic {
 	}
 
 	public List<Operation> getMoveOperations(int row, int col,
-			List<Integer> playerIds, int playerId, String pieces) {
+			List<String> playerIds, String playerId, String pieces) {
 		int index = getIndex(row, col);
 		List<Operation> operations = Lists.newArrayList();
 		operations.add(new SetTurn(playerIds.get(1 - playerIds

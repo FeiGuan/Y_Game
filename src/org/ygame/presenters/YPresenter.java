@@ -2,8 +2,8 @@ package org.ygame.presenters;
 
 import java.util.List;
 
-import org.ygame.client.shared.GameApi.Container;
-import org.ygame.client.shared.GameApi.UpdateUI;
+import org.game_api.GameApi.Container;
+import org.game_api.GameApi.UpdateUI;
 import org.ygame.client.shared.YGameLogic;
 import org.ygame.client.shared.YState;
 
@@ -25,7 +25,7 @@ public class YPresenter {
 		
 		public void outTryBlock(int row, int col);
 
-		public void setGameBoard(int yourPlayerId, List<Integer> playerList,
+		public void setGameBoard(String yourPlayerId, List<String> playerList,
 				String pieces);
 
 		public void cleanTryBlock();
@@ -48,9 +48,9 @@ public class YPresenter {
 
 	private YState state;
 
-	private int yourPlayerId;
+	private String yourPlayerId;
 
-	private List<Integer> playerIds;
+	private List<String> playerIds;
 
 	private final String KEYPIECES = "KEYPIECES";
 
@@ -75,8 +75,8 @@ public class YPresenter {
 		playerIds = updateUI.getPlayerIds();
 
 		if (updateUI.getState().isEmpty()
-				&& yourPlayerId == Ordering.<Integer> natural().min(
-						updateUI.getPlayerIds())) {
+				&& yourPlayerId.equals(Ordering.<String> natural().min(
+						updateUI.getPlayerIds()))) {
 			System.out.println("Players:" + updateUI.getPlayerIds());
 			System.out.println("Your player Id:" + yourPlayerId);
 			sendInitialMove(updateUI.getPlayerIds());
@@ -84,8 +84,8 @@ public class YPresenter {
 		}
 
 		String mapPieces = (String) updateUI.getState().get(KEYPIECES);
-		int mapPlayerId = (Integer) updateUI.getState().get(KEYPLAYERID);
-		List<Integer> mapPlayerIds = (List<Integer>) updateUI.getState().get(
+		String mapPlayerId = (String) updateUI.getState().get(KEYPLAYERID);
+		List<String> mapPlayerIds = (List<String>) updateUI.getState().get(
 				KEYPLAYERS);
 
 		state = new YState(mapPlayerId, ImmutableList.copyOf(mapPlayerIds),
@@ -99,17 +99,17 @@ public class YPresenter {
 		}
 
 		if (state.blackWin()) {
-			if (updateUI.getYourPlayerId() == playerIds.get(0))
+			if (updateUI.getYourPlayerId().equals(playerIds.get(0)))
 				showWinScene();
-			if (!(updateUI.getYourPlayerId() == playerIds.get(0)))
+			if (!(updateUI.getYourPlayerId().equals(playerIds.get(0))))
 				showLoseScene();
 			return;
 		}
 
 		if (state.whiteWin()) {
-			if (!(updateUI.getYourPlayerId() == playerIds.get(0)))
+			if (!(updateUI.getYourPlayerId().equals(playerIds.get(0))))
 				showWinScene();
-			if (updateUI.getYourPlayerId() == playerIds.get(0))
+			if (updateUI.getYourPlayerId().equals(playerIds.get(0)))
 				showLoseScene();
 			return;
 		}
@@ -121,12 +121,12 @@ public class YPresenter {
 
 		updateGameBoard(yourPlayerId, state.getPlayerIds(), state.getPieces());
 
-		if (!(yourPlayerId == state.getCurrentPlayer()))
+		if (!(yourPlayerId.equals(state.getCurrentPlayer())))
 			// showPickAndMakeMoveScene(yourPlayerId, state.get);
 			// else
 			disableUiAndWatch();
 		
-		if(yourPlayerId == state.getCurrentPlayer())
+		if(yourPlayerId.equals(state.getCurrentPlayer()))
 			enableUi();
 	}
 
@@ -146,7 +146,7 @@ public class YPresenter {
 			view.outTryBlock(row, col);
 	}
 
-	private void sendInitialMove(List<Integer> playerIds) {
+	private void sendInitialMove(List<String> playerIds) {
 		container.sendMakeMove(gameLogic.getInitialOperations(playerIds));
 	}
 
@@ -170,7 +170,7 @@ public class YPresenter {
 		view.setViewerState(ViewState.MAKE_MOVE);
 	}
 
-	private void updateGameBoard(int yourPlayerId, List<Integer> playerIds,
+	private void updateGameBoard(String yourPlayerId, List<String> playerIds,
 			String pieces) {
 		view.setGameBoard(yourPlayerId, playerIds, pieces);
 	}
