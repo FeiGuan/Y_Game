@@ -4,23 +4,28 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.AudioElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.media.client.Audio;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import org.ygame.presenters.YPresenter;
 import org.ygame.presenters.YPresenter.ViewState;
+import org.ygame.sounds.GameSounds;
 
 public class YGraphics extends Composite implements YPresenter.View {
 
@@ -32,11 +37,23 @@ public class YGraphics extends Composite implements YPresenter.View {
 
 	private YPresenter presenter;
 	private List<Button> btns = Lists.newArrayList();
+	private Button blackSourceBtn;
+	private Button whiteSourceBtn;
+	private Audio pieceDown;
+	private Audio pieceCaptured;
 	private int tryRow = -1;
 	private int tryCol = -1;
-	
+
 	private int outRow = -1;
 	private int outCol = -1;
+
+	private static GameImages gameImages = GWT.create(GameImages.class);
+	private static GameSounds gameSounds = GWT.create(GameSounds.class);
+
+	private PieceMovingAnimation animation;
+
+	private Image blackSource = new Image();
+	private Image whiteSource = new Image();
 
 	interface YGraphicsUiBinder extends UiBinder<Widget, YGraphics> {
 
@@ -51,7 +68,29 @@ public class YGraphics extends Composite implements YPresenter.View {
 	public YGraphics() {
 		initWidget(uiBinder.createAndBindUi(this));
 		initBoard();
+		if (Audio.isSupported()) {
+			pieceDown = Audio.createIfSupported();
+			pieceDown.addSource(gameSounds.pieceDownMp3().getSafeUri()
+					.asString(), AudioElement.TYPE_MP3);
+			pieceCaptured = Audio.createIfSupported();
+			pieceCaptured.addSource(gameSounds.pieceCaptureMp3().getSafeUri()
+					.asString(), AudioElement.TYPE_MP3);
+
+		}
+
+		whiteSource.setResource(getImage("white"));
+		blackSource.setResource(getImage("black"));
 	}
+
+	private ImageResource getImage(String kind) {
+		if (kind.equals("black"))
+			return gameImages.blackSource();
+		if (kind.equals("white"))
+			return gameImages.whiteSource();
+		return null;
+	}
+
+	private boolean sourceClicked = false;
 
 	private void initBoard() {
 		for (int i = 0; i < 10; i++) {
@@ -67,10 +106,14 @@ public class YGraphics extends Composite implements YPresenter.View {
 						int index = btns.indexOf(btn);
 						int row = getRowFrom(index);
 						int col = getColFrom(index);
+//						if(blackSourceBtn.isVisible())
+//							animateMove(row, col, 1);
+//						else
+//							animateMove(row, col, 2);
 						presenter.makeMove(row, col);
 					}
 				});
-				
+
 				btn.addMouseOverHandler(new MouseOverHandler() {
 
 					@Override
@@ -82,8 +125,8 @@ public class YGraphics extends Composite implements YPresenter.View {
 						presenter.tryCurrentPieceWithPosition(tryRow, tryCol);
 					}
 				});
-				
-				btn.addMouseOutHandler(new MouseOutHandler(){
+
+				btn.addMouseOutHandler(new MouseOutHandler() {
 
 					@Override
 					public void onMouseOut(MouseOutEvent event) {
@@ -93,7 +136,7 @@ public class YGraphics extends Composite implements YPresenter.View {
 						outCol = getColFrom(index);
 						presenter.outTryPieceWithPosition(outRow, outCol);
 					}
-					
+
 				});
 				btns.add(btn);
 				hpInner.add(btn);
@@ -101,6 +144,45 @@ public class YGraphics extends Composite implements YPresenter.View {
 			hpInner.setStyleName(CENTER);
 			buttonContainer.add(hpInner);
 		}
+		HorizontalPanel sourcePanel = new HorizontalPanel();
+		blackSourceBtn = new Button();
+		blackSourceBtn.setSize("50px", "50px");
+		blackSourceBtn.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				if (sourceClicked) {
+					sourceClicked = false;
+				} else {
+					sourceClicked = true;
+				}
+			}
+
+		});
+		blackSourceBtn.setStyleName(PLAYER_A_BLOCK_STYLE);
+
+		whiteSourceBtn = new Button();
+		whiteSourceBtn.setSize("50px", "50px");
+		whiteSourceBtn.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				if (sourceClicked) {
+					sourceClicked = false;
+				} else {
+					sourceClicked = true;
+				}
+			}
+
+		});
+		whiteSourceBtn.setStyleName(PLAYER_B_BLOCK_STYLE);
+
+		sourcePanel.add(blackSourceBtn);
+		sourcePanel.add(whiteSourceBtn);
+		sourcePanel.setStyleName(CENTER);
+
+		buttonContainer.add(sourcePanel);
+
 	}
 
 	private int getIndex(int row, int col) {
@@ -165,13 +247,31 @@ public class YGraphics extends Composite implements YPresenter.View {
 	}
 
 	@Override
-	public void setViewerState(ViewState vs) {
-		if (vs == ViewState.MAKE_MOVE)
+	public void setViewerState(ViewState vs, String color) {
+		if (vs == ViewState.MAKE_MOVE){
 			for (Button btn : btns)
 				btn.setEnabled(true);
-		else
+			if(color != null && color.equals("black")){
+				blackSourceBtn.setEnabled(true);
+				blackSourceBtn.setVisible(true);
+				whiteSourceBtn.setEnabled(false);
+				whiteSourceBtn.setVisible(false);
+			}
+			if(color != null && color.equals("white")){
+				whiteSourceBtn.setEnabled(true);
+				whiteSourceBtn.setVisible(true);
+				blackSourceBtn.setEnabled(false);
+				blackSourceBtn.setVisible(false);
+			}
+		}
+		else{
 			for (Button btn : btns)
 				btn.setEnabled(false);
+			blackSourceBtn.setEnabled(false);
+			blackSourceBtn.setVisible(false);
+			whiteSourceBtn.setEnabled(false);
+			whiteSourceBtn.setVisible(false);
+		}
 	}
 
 	@Override
@@ -179,9 +279,9 @@ public class YGraphics extends Composite implements YPresenter.View {
 		Button btn = btns.get(this.getIndex(row, col));
 		btn.setStyleName(TRY_BLOCK_STYLE);
 	}
-	
+
 	@Override
-	public void outTryBlock(int row, int col){
+	public void outTryBlock(int row, int col) {
 		Button btn = btns.get(this.getIndex(row, col));
 		btn.removeStyleName(TRY_BLOCK_STYLE);
 	}
@@ -224,4 +324,17 @@ public class YGraphics extends Composite implements YPresenter.View {
 		Window.alert("Tied game");
 	}
 
+	@Override
+	public void animateMove(int row, int col, int color) {
+		Button endButton = btns.get(getIndex(row, col));
+		ImageResource transformImage = null;
+		if (color == 1)
+			animation = new PieceMovingAnimation(blackSourceBtn, endButton,
+					gameImages.blackSource(), pieceDown);
+		else
+			animation = new PieceMovingAnimation(whiteSourceBtn, endButton,
+					gameImages.whiteSource(), pieceDown);
+		animation.run(1000);
+	}
+	
 }

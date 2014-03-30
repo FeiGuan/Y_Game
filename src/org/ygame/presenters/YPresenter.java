@@ -19,10 +19,10 @@ public class YPresenter {
 	public interface View {
 		public void setPresenter(YPresenter yPresenter);
 
-		public void setViewerState(ViewState vs);
+		public void setViewerState(ViewState vs, String color);
 
 		public void updateTryBlock(int row, int col);
-		
+
 		public void outTryBlock(int row, int col);
 
 		public void setGameBoard(String yourPlayerId, List<String> playerList,
@@ -35,6 +35,8 @@ public class YPresenter {
 		public void win();
 
 		public void tie();
+
+		public void animateMove(int row, int col, int color);
 	}
 
 	/**
@@ -125,13 +127,22 @@ public class YPresenter {
 			// showPickAndMakeMoveScene(yourPlayerId, state.get);
 			// else
 			disableUiAndWatch();
-		
-		if(yourPlayerId.equals(state.getCurrentPlayer()))
-			enableUi();
+
+		if (yourPlayerId.equals(state.getCurrentPlayer()))
+			if (yourPlayerId.equals(Ordering.<String> natural().min(
+					updateUI.getPlayerIds())))
+				enableUi("black");
+			else
+				enableUi("white");
 	}
 
 	public void makeMove(int row, int col) {
-		container.sendMakeMove(gameLogic.getMoveOperations(row, col, playerIds, yourPlayerId, state.getPieces()));
+		container.sendMakeMove(gameLogic.getMoveOperations(row, col, playerIds,
+				yourPlayerId, state.getPieces()));
+		if (yourPlayerId.equals(Ordering.<String> natural().min(playerIds)))
+			view.animateMove(row, col, 1);
+		else
+			view.animateMove(row, col, 2);
 	}
 
 	public void tryCurrentPieceWithPosition(int row, int col) {
@@ -139,10 +150,10 @@ public class YPresenter {
 		if (state.getPieces().charAt(row * (row + 1) / 2 + col) == '0')
 			view.updateTryBlock(row, col);
 	}
-	
-	public void outTryPieceWithPosition(int row, int col){
+
+	public void outTryPieceWithPosition(int row, int col) {
 		view.cleanTryBlock();
-		if(state.getPieces().charAt(row * (row + 1) / 2 + col) == '0')
+		if (state.getPieces().charAt(row * (row + 1) / 2 + col) == '0')
 			view.outTryBlock(row, col);
 	}
 
@@ -163,11 +174,11 @@ public class YPresenter {
 	}
 
 	private void disableUiAndWatch() {
-		view.setViewerState(ViewState.VIEW_ONLY);
+		view.setViewerState(ViewState.VIEW_ONLY, null);
 	}
-	
-	private void enableUi()	{
-		view.setViewerState(ViewState.MAKE_MOVE);
+
+	private void enableUi(String color) {
+		view.setViewerState(ViewState.MAKE_MOVE, color);
 	}
 
 	private void updateGameBoard(String yourPlayerId, List<String> playerIds,
