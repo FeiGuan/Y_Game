@@ -149,9 +149,12 @@ public class YGraphics extends Composite implements YPresenter.View {
 
 					@Override
 					public void onClick(ClickEvent event) {
-						pieceDown.play();
+						
+						
+						
 						
 						Button btn = (Button) event.getSource();
+						pieceDown.play();
 						int index = btns.indexOf(btn);
 
 						final int row = getRowFrom(index);

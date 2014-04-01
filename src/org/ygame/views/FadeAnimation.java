@@ -8,9 +8,10 @@ import com.google.gwt.user.client.Element;
 public class FadeAnimation extends Animation {
 
 	private Element element;
-	private double opacityIncrement;
 	private double targetOpacity;
 	private double baseOpacity;
+	private double opacityIncrement;
+	
 
 	public FadeAnimation(Element element) {
 		this.element = element;
