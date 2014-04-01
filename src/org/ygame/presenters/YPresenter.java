@@ -139,10 +139,6 @@ public class YPresenter {
 	public void makeMove(int row, int col) {
 		container.sendMakeMove(gameLogic.getMoveOperations(row, col, playerIds,
 				yourPlayerId, state.getPieces()));
-		if (yourPlayerId.equals(Ordering.<String> natural().min(playerIds)))
-			view.animateMove(row, col, 1);
-		else
-			view.animateMove(row, col, 2);
 	}
 
 	public void tryCurrentPieceWithPosition(int row, int col) {

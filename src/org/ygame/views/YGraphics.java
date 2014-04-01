@@ -2,6 +2,12 @@ package org.ygame.views;
 
 import java.util.List;
 
+import com.allen_sauer.gwt.dnd.client.DragContext;
+import com.allen_sauer.gwt.dnd.client.PickupDragController;
+import com.allen_sauer.gwt.dnd.client.drop.BoundaryDropController;
+import com.allen_sauer.gwt.dnd.client.drop.SimpleDropController;
+import com.allen_sauer.gwt.voices.client.Sound;
+import com.allen_sauer.gwt.voices.client.SoundController;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.AudioElement;
@@ -20,6 +26,8 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -29,7 +37,6 @@ import org.adamtacy.client.ui.effects.events.EffectCompletedHandler;
 import org.adamtacy.client.ui.effects.impl.Resize;
 import org.ygame.presenters.YPresenter;
 import org.ygame.presenters.YPresenter.ViewState;
-import org.ygame.sounds.GameSounds;
 
 public class YGraphics extends Composite implements YPresenter.View {
 
@@ -44,8 +51,6 @@ public class YGraphics extends Composite implements YPresenter.View {
 	private List<Button> btns = Lists.newArrayList();
 	private Button blackSourceBtn;
 	private Button whiteSourceBtn;
-	private Audio pieceDown;
-	private Audio pieceCaptured;
 	private int tryRow = -1;
 	private int tryCol = -1;
 
@@ -53,7 +58,6 @@ public class YGraphics extends Composite implements YPresenter.View {
 	private int outCol = -1;
 
 	private static GameImages gameImages = GWT.create(GameImages.class);
-	private static GameSounds gameSounds = GWT.create(GameSounds.class);
 
 	private PieceMovingAnimation animation;
 
@@ -61,6 +65,17 @@ public class YGraphics extends Composite implements YPresenter.View {
 	private Image whiteSource = new Image();
 
 	private TextBox txt = new TextBox();
+
+	private SoundController soundController = new SoundController();
+
+	private Sound sound = soundController.createSound(
+			Sound.MIME_TYPE_AUDIO_WAV_PCM, "pieceDown.wav");
+	
+	private static GameSounds gameSounds = GWT.create(GameSounds.class);
+	private Audio pieceDown;
+
+	private PickupDragController dragController;
+	private SimpleDropController dropController;
 
 	interface YGraphicsUiBinder extends UiBinder<Widget, YGraphics> {
 
@@ -72,21 +87,44 @@ public class YGraphics extends Composite implements YPresenter.View {
 	@UiField
 	VerticalPanel buttonContainer;
 
+	@UiField
+	Label dragFrom;
+
+	@UiField
+	Label dragTo;
+
 	public YGraphics() {
 		initWidget(uiBinder.createAndBindUi(this));
-		initBoard();
-		if (Audio.isSupported()) {
+
+		dragController = new PickupDragController(RootPanel.get(), false);
+		dragController.makeDraggable(dragFrom);
+		dropController = new TestDropController(dragTo);
+		dragController.registerDropController(dropController);
+		if(Audio.isSupported()){
 			pieceDown = Audio.createIfSupported();
-			pieceDown.addSource(gameSounds.pieceDownMp3().getSafeUri()
-					.asString(), AudioElement.TYPE_MP3);
-			pieceCaptured = Audio.createIfSupported();
-			pieceCaptured.addSource(gameSounds.pieceCaptureMp3().getSafeUri()
-					.asString(), AudioElement.TYPE_MP3);
-
+			pieceDown.addSource(gameSounds.pieceDownWav().getSafeUri()
+					.asString(), AudioElement.TYPE_WAV);
 		}
-
+		initBoard();
 		whiteSource.setResource(getImage("white"));
 		blackSource.setResource(getImage("black"));
+	}
+
+	class TestDropController extends SimpleDropController {
+		public TestDropController(Widget dropTarget) {
+			super(dropTarget);
+		}
+
+		@Override
+		public void onDrop(DragContext context) {
+			for (Widget w : context.selectedWidgets) {
+				if (w instanceof Label) {
+					w.setVisible(false);
+					dragFrom.setText("You have dropped here!");
+				}
+			}
+			super.onDrop(context);
+		}
 	}
 
 	private ImageResource getImage(String kind) {
@@ -111,14 +149,15 @@ public class YGraphics extends Composite implements YPresenter.View {
 
 					@Override
 					public void onClick(ClickEvent event) {
+						pieceDown.play();
+						
 						Button btn = (Button) event.getSource();
 						int index = btns.indexOf(btn);
 
 						final int row = getRowFrom(index);
 						final int col = getColFrom(index);
 						if (blackSource.isVisible()) {
-							
-							
+
 							Resize resize = new Resize(blackSource.getElement());
 							resize.setDuration(1);
 							resize.setStartPercentage(100);
@@ -130,13 +169,15 @@ public class YGraphics extends Composite implements YPresenter.View {
 										EffectCompletedEvent event) {
 									presenter.makeMove(row, col);
 									blackSource.setSize("50px", "50px");
+									blackSource.setVisible(true);
+									
 								}
 
 							});
 							resize.play();
 						}
 						if (whiteSource.isVisible()) {
-							
+
 							Resize resize = new Resize(whiteSource.getElement());
 							resize.setDuration(1);
 							resize.setStartPercentage(100);
@@ -148,6 +189,7 @@ public class YGraphics extends Composite implements YPresenter.View {
 										EffectCompletedEvent event) {
 									presenter.makeMove(row, col);
 									whiteSource.setSize("50px", "50px");
+									whiteSource.setVisible(true);
 								}
 
 							});
@@ -193,9 +235,28 @@ public class YGraphics extends Composite implements YPresenter.View {
 		sourcePanel.add(whiteSource);
 
 		sourcePanel.setStyleName(CENTER);
-		// sourcePanel.setStyleName(MARGIN);
 
 		buttonContainer.add(sourcePanel);
+
+		HorizontalPanel dragFromPanel = new HorizontalPanel();
+
+		dragFromPanel.add(dragFrom);
+
+		dragFromPanel.setStyleName(CENTER);
+
+		buttonContainer.add(dragFromPanel);
+
+		HorizontalPanel dragToPanel = new HorizontalPanel();
+
+		dragToPanel.add(dragTo);
+
+		dragToPanel.setStyleName(CENTER);
+
+		buttonContainer.add(dragToPanel);
+
+		BoundaryDropController dropController = new BoundaryDropController(
+				RootPanel.get(), false);
+		dragController.registerDropController(dropController);
 	}
 
 	private int getIndex(int row, int col) {

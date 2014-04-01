@@ -5,6 +5,11 @@
 	<inherits name="com.google.common.collect.Collect" />
 	<inherits name="com.google.gwt.user.theme.clean.Clean" />
 	<inherits name='com.google.gwt.json.JSON'/>
-	<source path=""/>
+	<inherits name="org.adamtacy.GWTEffects" />
+	<inherits name='com.allen_sauer.gwt.voices.gwt-voices' />
+	<inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>
+	<add-linker name='xsiframe' />
+	<source path="game_api"/>
+	<source path="ygame"/>
 	<entry-point class="org.ygame.Y_Game"/>
 </module>
