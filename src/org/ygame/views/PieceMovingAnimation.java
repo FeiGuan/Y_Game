@@ -6,9 +6,10 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.RootPanel;
 
 public class PieceMovingAnimation extends Animation {
-	AbsolutePanel panel;
+	RootPanel panel;
 	Image moving;
 	ImageResource piece;
 	Button start, end;
@@ -17,18 +18,23 @@ public class PieceMovingAnimation extends Animation {
 	boolean cancelled;
 
 	public PieceMovingAnimation(Button startButton, Button endButton,
-			ImageResource startRes, Audio sfx) {
+			ImageResource startRes) {
 		start = startButton;
+		panel = RootPanel.get();
 		end = endButton;
 		piece = startRes;
-		panel = (AbsolutePanel) start.getParent();
+//		panel = (RootPanel) start.getParent().getParent().getParent()
+//				.getParent().getParent().getParent().getParent().getParent()
+//				.getParent().getParent().getParent().getParent().getParent()
+//				.getParent().getParent().getParent().getParent().getParent()
+//				.getParent();
 		startX = panel.getWidgetLeft(start);
 		startY = panel.getWidgetTop(start);
 		startWidth = startButton.getOffsetWidth();
 		startHeight = startButton.getOffsetHeight();
 		endX = panel.getWidgetLeft(end);
 		endY = panel.getWidgetTop(end);
-		soundAtEnd = sfx;
+		// soundAtEnd = sfx;
 		cancelled = false;
 
 		moving = new Image(startRes);
@@ -44,9 +50,9 @@ public class PieceMovingAnimation extends Animation {
 		int width = (int) (startWidth * scale);
 		int height = (int) (startHeight * scale);
 		moving.setPixelSize(width, height);
-		x -= (width - startWidth) /2;
-		y -= (height - startHeight) /2;
-		
+		x -= (width - startWidth) / 2;
+		y -= (height - startHeight) / 2;
+
 		panel.remove(moving);
 		moving = new Image(piece.getSafeUri());
 		moving.setPixelSize(width, height);
@@ -55,8 +61,8 @@ public class PieceMovingAnimation extends Animation {
 
 	@Override
 	protected void onCancel() {
-		if(!cancelled){
-			if(soundAtEnd != null)
+		if (!cancelled) {
+			if (soundAtEnd != null)
 				soundAtEnd.play();
 			panel.remove(moving);
 		}

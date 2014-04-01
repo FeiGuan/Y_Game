@@ -20,9 +20,13 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import org.adamtacy.client.ui.effects.events.EffectCompletedEvent;
+import org.adamtacy.client.ui.effects.events.EffectCompletedHandler;
+import org.adamtacy.client.ui.effects.impl.Resize;
 import org.ygame.presenters.YPresenter;
 import org.ygame.presenters.YPresenter.ViewState;
 import org.ygame.sounds.GameSounds;
@@ -34,6 +38,7 @@ public class YGraphics extends Composite implements YPresenter.View {
 	private final static String PLAYER_A_BLOCK_STYLE = "color-icon";
 	private final static String PLAYER_B_BLOCK_STYLE = "color-icon2";
 	private final static String CENTER = "center";
+	private final static String MARGIN = "margin";
 
 	private YPresenter presenter;
 	private List<Button> btns = Lists.newArrayList();
@@ -54,6 +59,8 @@ public class YGraphics extends Composite implements YPresenter.View {
 
 	private Image blackSource = new Image();
 	private Image whiteSource = new Image();
+
+	private TextBox txt = new TextBox();
 
 	interface YGraphicsUiBinder extends UiBinder<Widget, YGraphics> {
 
@@ -98,19 +105,55 @@ public class YGraphics extends Composite implements YPresenter.View {
 			for (int j = 0; j <= i; j++) {
 				Button btn = new Button();
 				btn.setSize("50px", "50px");
+				// final FadeAnimation fadeAnimation = new
+				// FadeAnimation(btn.getElement());
 				btn.addClickHandler(new ClickHandler() {
 
 					@Override
 					public void onClick(ClickEvent event) {
 						Button btn = (Button) event.getSource();
 						int index = btns.indexOf(btn);
-						int row = getRowFrom(index);
-						int col = getColFrom(index);
-//						if(blackSourceBtn.isVisible())
-//							animateMove(row, col, 1);
-//						else
-//							animateMove(row, col, 2);
-						presenter.makeMove(row, col);
+
+						final int row = getRowFrom(index);
+						final int col = getColFrom(index);
+						if (blackSource.isVisible()) {
+							
+							
+							Resize resize = new Resize(blackSource.getElement());
+							resize.setDuration(1);
+							resize.setStartPercentage(100);
+							resize.setEndPercentage(0);
+							resize.addEffectCompletedHandler(new EffectCompletedHandler() {
+
+								@Override
+								public void onEffectCompleted(
+										EffectCompletedEvent event) {
+									presenter.makeMove(row, col);
+									blackSource.setSize("50px", "50px");
+								}
+
+							});
+							resize.play();
+						}
+						if (whiteSource.isVisible()) {
+							
+							Resize resize = new Resize(whiteSource.getElement());
+							resize.setDuration(1);
+							resize.setStartPercentage(100);
+							resize.setEndPercentage(0);
+							resize.addEffectCompletedHandler(new EffectCompletedHandler() {
+
+								@Override
+								public void onEffectCompleted(
+										EffectCompletedEvent event) {
+									presenter.makeMove(row, col);
+									whiteSource.setSize("50px", "50px");
+								}
+
+							});
+							resize.play();
+						}
+
 					}
 				});
 
@@ -145,44 +188,14 @@ public class YGraphics extends Composite implements YPresenter.View {
 			buttonContainer.add(hpInner);
 		}
 		HorizontalPanel sourcePanel = new HorizontalPanel();
-		blackSourceBtn = new Button();
-		blackSourceBtn.setSize("50px", "50px");
-		blackSourceBtn.addClickHandler(new ClickHandler() {
 
-			@Override
-			public void onClick(ClickEvent event) {
-				if (sourceClicked) {
-					sourceClicked = false;
-				} else {
-					sourceClicked = true;
-				}
-			}
+		sourcePanel.add(blackSource);
+		sourcePanel.add(whiteSource);
 
-		});
-		blackSourceBtn.setStyleName(PLAYER_A_BLOCK_STYLE);
-
-		whiteSourceBtn = new Button();
-		whiteSourceBtn.setSize("50px", "50px");
-		whiteSourceBtn.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				if (sourceClicked) {
-					sourceClicked = false;
-				} else {
-					sourceClicked = true;
-				}
-			}
-
-		});
-		whiteSourceBtn.setStyleName(PLAYER_B_BLOCK_STYLE);
-
-		sourcePanel.add(blackSourceBtn);
-		sourcePanel.add(whiteSourceBtn);
 		sourcePanel.setStyleName(CENTER);
+		// sourcePanel.setStyleName(MARGIN);
 
 		buttonContainer.add(sourcePanel);
-
 	}
 
 	private int getIndex(int row, int col) {
@@ -248,29 +261,24 @@ public class YGraphics extends Composite implements YPresenter.View {
 
 	@Override
 	public void setViewerState(ViewState vs, String color) {
-		if (vs == ViewState.MAKE_MOVE){
+		if (vs == ViewState.MAKE_MOVE) {
 			for (Button btn : btns)
 				btn.setEnabled(true);
-			if(color != null && color.equals("black")){
-				blackSourceBtn.setEnabled(true);
-				blackSourceBtn.setVisible(true);
-				whiteSourceBtn.setEnabled(false);
-				whiteSourceBtn.setVisible(false);
+			if (color != null && color.equals("black")) {
+				blackSource.setVisible(true);
+				whiteSource.setVisible(false);
 			}
-			if(color != null && color.equals("white")){
-				whiteSourceBtn.setEnabled(true);
-				whiteSourceBtn.setVisible(true);
-				blackSourceBtn.setEnabled(false);
-				blackSourceBtn.setVisible(false);
+			if (color != null && color.equals("white")) {
+				blackSource.setVisible(false);
+				whiteSource.setVisible(true);
 			}
-		}
-		else{
+		} else {
 			for (Button btn : btns)
 				btn.setEnabled(false);
-			blackSourceBtn.setEnabled(false);
-			blackSourceBtn.setVisible(false);
-			whiteSourceBtn.setEnabled(false);
-			whiteSourceBtn.setVisible(false);
+			// blackSource.setEnabled(false);
+			blackSource.setVisible(false);
+			// whiteSource.setEnabled(false);
+			whiteSource.setVisible(false);
 		}
 	}
 
@@ -327,14 +335,15 @@ public class YGraphics extends Composite implements YPresenter.View {
 	@Override
 	public void animateMove(int row, int col, int color) {
 		Button endButton = btns.get(getIndex(row, col));
-		ImageResource transformImage = null;
-		if (color == 1)
+		if (color == 1) {
 			animation = new PieceMovingAnimation(blackSourceBtn, endButton,
-					gameImages.blackSource(), pieceDown);
-		else
+					gameImages.blackSource());
+			txt.setText("start:" + animation.startX + "." + animation.startY
+					+ "." + animation.endX + "." + animation.endY);
+		} else
 			animation = new PieceMovingAnimation(whiteSourceBtn, endButton,
-					gameImages.whiteSource(), pieceDown);
+					gameImages.whiteSource());
 		animation.run(1000);
 	}
-	
+
 }
