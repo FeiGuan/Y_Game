@@ -148,19 +148,15 @@ public class YGraphics extends Composite implements YPresenter.View {
 				btn.addClickHandler(new ClickHandler() {
 
 					@Override
-					public void onClick(ClickEvent event) {
-						
-						
-						
-						
+					public void onClick(ClickEvent event) {		
 						Button btn = (Button) event.getSource();
-						pieceDown.play();
+						
 						int index = btns.indexOf(btn);
 
 						final int row = getRowFrom(index);
 						final int col = getColFrom(index);
-						if (blackSource.isVisible()) {
-
+						if (blackSource.isVisible() && presenter.state.getPieces().charAt(index) == '0') {
+							pieceDown.play();
 							Resize resize = new Resize(blackSource.getElement());
 							resize.setDuration(1);
 							resize.setStartPercentage(100);
@@ -179,8 +175,8 @@ public class YGraphics extends Composite implements YPresenter.View {
 							});
 							resize.play();
 						}
-						if (whiteSource.isVisible()) {
-
+						if (whiteSource.isVisible() && presenter.state.getPieces().charAt(index) == '0') {
+							pieceDown.play();
 							Resize resize = new Resize(whiteSource.getElement());
 							resize.setDuration(1);
 							resize.setStartPercentage(100);

@@ -48,7 +48,7 @@ public class YPresenter {
 
 	private final Container container;
 
-	private YState state;
+	public YState state;
 
 	private String yourPlayerId;
 
