@@ -72,7 +72,6 @@ public class YGraphics extends Composite implements YPresenter.View {
 			Sound.MIME_TYPE_AUDIO_WAV_PCM, "pieceDown.wav");
 	
 	private static GameSounds gameSounds = GWT.create(GameSounds.class);
-	private Audio pieceDown;
 
 	private PickupDragController dragController;
 	private SimpleDropController dropController;
@@ -100,11 +99,6 @@ public class YGraphics extends Composite implements YPresenter.View {
 		dragController.makeDraggable(dragFrom);
 		dropController = new TestDropController(dragTo);
 		dragController.registerDropController(dropController);
-		if(Audio.isSupported()){
-			pieceDown = Audio.createIfSupported();
-			pieceDown.addSource(gameSounds.pieceDownWav().getSafeUri()
-					.asString(), AudioElement.TYPE_WAV);
-		}
 		initBoard();
 		whiteSource.setResource(getImage("white"));
 		blackSource.setResource(getImage("black"));
@@ -156,7 +150,7 @@ public class YGraphics extends Composite implements YPresenter.View {
 						final int row = getRowFrom(index);
 						final int col = getColFrom(index);
 						if (blackSource.isVisible() && presenter.state.getPieces().charAt(index) == '0') {
-							pieceDown.play();
+							sound.play();
 							Resize resize = new Resize(blackSource.getElement());
 							resize.setDuration(1);
 							resize.setStartPercentage(100);
@@ -176,7 +170,7 @@ public class YGraphics extends Composite implements YPresenter.View {
 							resize.play();
 						}
 						if (whiteSource.isVisible() && presenter.state.getPieces().charAt(index) == '0') {
-							pieceDown.play();
+							sound.play();
 							Resize resize = new Resize(whiteSource.getElement());
 							resize.setDuration(1);
 							resize.setStartPercentage(100);
