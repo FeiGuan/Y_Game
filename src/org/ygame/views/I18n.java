@@ -12,6 +12,9 @@ public interface I18n extends Messages{
 	@Key("youLose")
 	String youLose();
 	
+	@Key("tieGame")
+	String tieGame();
+	
 	@Key("dragMe")
 	String dragMe();
 	

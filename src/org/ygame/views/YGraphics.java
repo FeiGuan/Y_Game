@@ -91,6 +91,15 @@ public class YGraphics extends Composite implements YPresenter.View {
 
 	@UiField
 	Label dragTo;
+	
+	@UiField
+	Label youWin;
+	
+	@UiField
+	Label youLose;
+	
+	@UiField
+	Label tieGame;
 
 	public YGraphics() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -132,6 +141,9 @@ public class YGraphics extends Composite implements YPresenter.View {
 	private boolean sourceClicked = false;
 
 	private void initBoard() {
+		youWin.setVisible(false);
+		youLose.setVisible(false);
+		tieGame.setVisible(false);
 		for (int i = 0; i < 10; i++) {
 			HorizontalPanel hpInner = new HorizontalPanel();
 			for (int j = 0; j <= i; j++) {
@@ -373,17 +385,17 @@ public class YGraphics extends Composite implements YPresenter.View {
 
 	@Override
 	public void lose() {
-		Window.alert("You lose");
+		youLose.setVisible(true);
 	}
 
 	@Override
 	public void win() {
-		Window.alert("You win");
+		youWin.setVisible(true);
 	}
 
 	@Override
 	public void tie() {
-		Window.alert("Tied game");
+		tieGame.setVisible(true);
 	}
 
 	@Override
