@@ -11,7 +11,7 @@
 	<inherits name="com.google.gwt.i18n.I18N"/>
 	<extend-property name="locale" values="en"/>
 	<extend-property name="locale" values="zh"/>
-	<set-property-fallback name="locale" value="zh"/>
+	<set-property-fallback name="locale" value="en"/>
 	<add-linker name='xsiframe' />
 	<source path="game_api"/>
 	<source path="ygame"/>
