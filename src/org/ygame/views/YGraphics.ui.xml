@@ -1,11 +1,12 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" ui:generateFormat="com.google.gwt.i18n.rebind.format.PropertiesFormat"
+	ui:generateLocales="default">
+	<ui:with field='i18n' type='org.ygame.views.I18n' />
 	<g:HorizontalPanel height="500px" width="500px">
 		<g:VerticalPanel ui:field="buttonContainer">
 		</g:VerticalPanel>
-		<g:Label ui:field="dragFrom" styleName="margined">Drag Me</g:Label>
-		<g:Label ui:field="dragTo" styleName="margined">Drop Here</g:Label>
+		<g:Label ui:field="dragFrom" styleName="margined"><ui:text from="{i18n.dragMe}" /></g:Label>
+		<g:Label ui:field="dragTo" styleName="margined"><ui:text from="{i18n.dropHere}" /></g:Label>
 	</g:HorizontalPanel>
-
 </ui:UiBinder> 
