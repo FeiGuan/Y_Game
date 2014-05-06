@@ -89,12 +89,6 @@ public class YGraphics extends Composite implements YPresenter.View {
 	VerticalPanel buttonContainer;
 
 	@UiField
-	Label dragFrom;
-
-	@UiField
-	Label dragTo;
-	
-	@UiField
 	Label youWin;
 	
 	@UiField
@@ -107,8 +101,6 @@ public class YGraphics extends Composite implements YPresenter.View {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		dragController = new PickupDragController(RootPanel.get(), false);
-		dragController.makeDraggable(dragFrom);
-		dropController = new TestDropController(dragTo);
 		dragController.registerDropController(dropController);
 		initBoard();
 		whiteSource.setResource(getImage("white"));
@@ -125,7 +117,6 @@ public class YGraphics extends Composite implements YPresenter.View {
 			for (Widget w : context.selectedWidgets) {
 				if (w instanceof Label) {
 					w.setVisible(false);
-					dragFrom.setText("You have dropped here!");
 				}
 			}
 			super.onDrop(context);
@@ -251,21 +242,21 @@ public class YGraphics extends Composite implements YPresenter.View {
 
 		buttonContainer.add(sourcePanel);
 
-		HorizontalPanel dragFromPanel = new HorizontalPanel();
+//		HorizontalPanel dragFromPanel = new HorizontalPanel();
 
-		dragFromPanel.add(dragFrom);
+//		dragFromPanel.add(dragFrom);
 
-		dragFromPanel.setStyleName(CENTER);
+//		dragFromPanel.setStyleName(CENTER);
 
-		buttonContainer.add(dragFromPanel);
+//		buttonContainer.add(dragFromPanel);
 
-		HorizontalPanel dragToPanel = new HorizontalPanel();
+//		HorizontalPanel dragToPanel = new HorizontalPanel();
 
-		dragToPanel.add(dragTo);
+//		dragToPanel.add(dragTo);
 
-		dragToPanel.setStyleName(CENTER);
+//		dragToPanel.setStyleName(CENTER);
 
-		buttonContainer.add(dragToPanel);
+//		buttonContainer.add(dragToPanel);
 
 		BoundaryDropController dropController = new BoundaryDropController(
 				RootPanel.get(), false);

@@ -127,7 +127,8 @@ public class YPresenter {
 			in = true;
 			if (state.getPieces().charAt(0) == '0')
 				makeMove(0, 0);
-			else if (state.getPieces().charAt(getIndex(9, 0)) == '0')
+			else if (state.getPieces().charAt(getIndex(9, 0)) == '2'
+					&& state.getPieces().charAt(getIndex(9, 0)) == '0')
 				makeMove(9, 0);
 			else {
 				int a = 0, b = 1;
@@ -141,15 +142,18 @@ public class YPresenter {
 						a++;
 						b++;
 						continue;
-					} else if(state.getPieces().charAt(getIndex(i, b)) == '0'){
+					} else if (state.getPieces().charAt(getIndex(i, b)) == '0') {
 						makeMove(i, b);
 						break;
-					}
-					else{
-						for(int j = 0; j < state.getPieces().length(); j++){
-							if(state.getPieces().charAt(j) == '0')
-								makeMove(getRowFrom(j), getRowFrom(j));
+					} else {
+						for (int j = 0; j < state.getPieces().length(); j++) {
+							if (state.getPieces().charAt(j) == '0'){
+								makeMove(getRowFrom(j), getColFrom(j));
+								break;
+							}
+							
 						}
+						break;
 					}
 				}
 				return;

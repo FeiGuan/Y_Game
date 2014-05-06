@@ -6,7 +6,7 @@ Play-and-pass Game URL: http://1-dot-ygame742.appspot.com/Y_Game.html
 
 Game in emulator URL: http://6-dot-ygame742.appspot.com/Y_Game.html
 
-Emulator URL: http://4-dot-smg-gwt-emulator.appspot.com/GwtEmulator.html 
+Emulator URL: http://7-dot-smg-gwt-emulator.appspot.com/GwtEmulator.html 
 
 When clicking a button, the image fade away.<p>
 When drag the label "drag me" to "drop me here", label disappers.<p>

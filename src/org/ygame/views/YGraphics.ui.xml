@@ -6,12 +6,6 @@
 	<g:HorizontalPanel height="500px" width="500px">
 		<g:VerticalPanel ui:field="buttonContainer">
 		</g:VerticalPanel>
-		<g:Label ui:field="dragFrom" styleName="margined">
-		    <ui:text from="{i18n.dragMe}" />
-		</g:Label>
-		<g:Label ui:field="dragTo" styleName="margined">
-		    <ui:text from="{i18n.dropHere}" />
-		</g:Label>
 		<g:Label ui:field="youWin" styleName="margined">
 			<ui:text from="{i18n.youWin}" />
 		</g:Label>
