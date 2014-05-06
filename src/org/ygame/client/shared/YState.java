@@ -7,11 +7,17 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 
 public class YState {
+
+	public String toString() {
+		return "=" + playerId + "=====" + pieces;
+	}
+
 	private final String playerId;
 	private final ImmutableList<String> playerIds;
 	private String pieces;
 
-	public YState(String playerId, ImmutableList<String> playerIds, String pieces) {
+	public YState(String playerId, ImmutableList<String> playerIds,
+			String pieces) {
 		this.playerId = playerId;
 		this.playerIds = playerIds;
 		this.pieces = pieces;

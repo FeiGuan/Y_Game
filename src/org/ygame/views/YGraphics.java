@@ -49,6 +49,8 @@ public class YGraphics extends Composite implements YPresenter.View {
 
 	private YPresenter presenter;
 	private List<Button> btns = Lists.newArrayList();
+	private Label sign = new Label();
+	private Label sign2 = new Label();
 	private Button blackSourceBtn;
 	private Button whiteSourceBtn;
 	private int tryRow = -1;
@@ -144,6 +146,8 @@ public class YGraphics extends Composite implements YPresenter.View {
 		youWin.setVisible(false);
 		youLose.setVisible(false);
 		tieGame.setVisible(false);
+		sign.setVisible(true);
+		sign2.setVisible(true);
 		for (int i = 0; i < 10; i++) {
 			HorizontalPanel hpInner = new HorizontalPanel();
 			for (int j = 0; j <= i; j++) {
@@ -238,6 +242,10 @@ public class YGraphics extends Composite implements YPresenter.View {
 
 		sourcePanel.add(blackSource);
 		sourcePanel.add(whiteSource);
+		// sourcePanel.add(sign);
+		// sourcePanel.add(sign2);
+		// sign.setText("aaaa");
+		// sign2.setText("bbbb");
 
 		sourcePanel.setStyleName(CENTER);
 
@@ -410,6 +418,14 @@ public class YGraphics extends Composite implements YPresenter.View {
 			animation = new PieceMovingAnimation(whiteSourceBtn, endButton,
 					gameImages.whiteSource());
 		animation.run(1000);
+	}
+	
+	public void showSign(String s){
+		sign.setText(s);
+	}
+	
+	public void showSign2(String s){
+		sign2.setText(s);
 	}
 
 }

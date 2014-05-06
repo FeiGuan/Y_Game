@@ -244,6 +244,8 @@ public class YGameLogic {
 		return operations;
 	}
 
+
+
 	private void check(boolean val, Object... debugArguments) {
 		if (!val) {
 			throw new RuntimeException("We have a hacker! debugArguments="
